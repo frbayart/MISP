@@ -32,6 +32,7 @@ random_string() {
 ## optional settings
 : "${MISP_PATH:=/var/www/MISP}"
 : "${APACHE_USER:=www-data}"
+: "${MISP_RELEASE:=2.5}" # The release to install, can be a branch or a tag.
 
 ### DB settings, if you want to use a different DB host, name, user, or password, please change these
 : "${DBHOST:=localhost}"
@@ -292,15 +293,15 @@ if [ -d "$MISP_PATH" ]; then
         exit 1
     fi
 else
-    git clone -b 2.5 https://github.com/MISP/MISP.git "${MISP_PATH}" &>>$logfile
+    git clone -b $MISP_RELEASE https://github.com/MISP/MISP.git "${MISP_PATH}" &>>$logfile
     error_check "MISP cloning"
 fi
 
 cd "${MISP_PATH}" || exit 1
-git fetch origin 2.5 &>>$logfile
-error_check "Fetching 2.5 branch"
-git checkout 2.5 &>>$logfile
-error_check "Checking out 2.5 branch"
+git fetch origin $MISP_RELEASE &>>$logfile
+error_check "Fetching $MISP_RELEASE branch"
+git checkout $MISP_RELEASE &>>$logfile
+error_check "Checking out $MISP_RELEASE branch"
 
 print_status "Cloning MISP submodules..."
 if ! git config --global --get-all safe.directory 2>/dev/null | grep -Fxq "${MISP_PATH}"; then
