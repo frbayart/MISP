@@ -258,14 +258,16 @@ error_check "MariaDB restart"
 print_ok "PHP and MySQL configured..."
 
 print_status "Installing PECL extensions..."
-
-pecl channel-update pecl.php.net &>>$logfile || echo "Continuing despite error in updating PECL channel"
-pecl install brotli &>>$logfile
+TMP_DIR=$(mktemp -d -p /opt/)
+TMPDIR=$TMP_DIR pecl channel-update pecl.php.net &>>$logfile || echo "Continuing despite error in updating PECL channel"
+TMPDIR=$TMP_DIR pecl install brotli &>>$logfile
 error_check_soft "PECL brotli extension installation" || echo "Continuing despite error in installing PECL brotli extension"
-pecl install simdjson &>>$logfile
+TMPDIR=$TMP_DIR pecl install simdjson &>>$logfile
 error_check_soft "PECL simdjson extension installation" || echo "Continuing despite error in installing PECL simdjson extension"
-pecl install zstd &>>$logfile
+TMPDIR=$TMP_DIR pecl install zstd &>>$logfile
 error_check_soft "PECL zstd extension installation" || echo "Continuing despite error in installing PECL zstd extension"
+
+rm -Rf $TMP_DIR &>>$logfile
 
 if [ "$INSTALL_SSDEEP" == "y" ]; then
     apt install make -y &>>$logfile
