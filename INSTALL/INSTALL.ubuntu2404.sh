@@ -295,7 +295,7 @@ if [ -d "$MISP_PATH" ]; then
         exit 1
     fi
 else
-    git clone -b $MISP_RELEASE https://github.com/MISP/MISP.git "${MISP_PATH}" &>>$logfile
+    git clone --recursive --depth=1  -b $MISP_RELEASE https://github.com/MISP/MISP.git "${MISP_PATH}" &>>$logfile
     error_check "MISP cloning"
 fi
 
